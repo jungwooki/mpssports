@@ -1,0 +1,18 @@
+{
+  "version": "투자자 설명형",
+  "slides": 27,
+  "service_slides": {
+    "mental": 2,
+    "physical": 2,
+    "growth_stage": 1
+  },
+  "service_pdf_pages": [
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "reference_order": "기존 목차 순서 유지, 해결 방법 확장",
+  "prior_text_reduction": "24페이지 버전의 이전 비교 결과는 백업 문서 참고"
+}
