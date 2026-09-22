@@ -1,0 +1,10 @@
+# Local reference material and generated exports live in ../20260922mpssports_1/.
+.DS_Store
+__pycache__/
+*.pyc
+/preview/
+/preview_pretendard/
+/이전버전/
+/근거자료/
+*.pdf
+*.pptx

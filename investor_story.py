@@ -259,3 +259,71 @@ REFERENCE_CSS+=''''
 .overseas-cards article:first-child .official-logo img{width:320px}
 .overseas-roadmap{margin-top:38px;padding-top:16px}
 '''
+# Make the domestic comparison discoverable in slide titles and the contents menu.
+S[18]['title']='플코(PLCO)와 MPS, <em>성장관리의 초점이 다릅니다</em>'
+S[18]['cat']='경쟁사 분석 / 플코 비교'
+S[18]['body']=S[18]['body'].replace('PLCO / 공개 서비스','플코(PLCO) / 공개 서비스')
+
+# User-provided image concepts recovered byte-for-byte from earlier source decks.
+S[8]['body']=S[8]['body'].replace(pic(A/'mental-followup.png','프로선수 출신 멘토와 모바일 다이어리의 연결'),pic(A/'mental-mentor.jpg','멘탈 멘토와 선수의 상담 이미지'))
+S[8]['body']=S[8]['body'].replace('<figcaption>프로선수 출신 멘토와 모바일 다이어리의 연결</figcaption>','<figcaption>선수 경험으로 공감하는 멘탈 멘토링</figcaption>')
+S[8]['cls']+=' mentor-photo'
+S[14]['body']='<div class="center-concepts">'+''.join('<figure><button class="zoom">'+pic(A/name,title)+'</button><figcaption><b>'+title+'</b><span>상상도 / 구축 예정</span></figcaption></figure>' for name,title in [('measurement-concept.jpg','측정으로 이해하고'),('physical-gym-concept.jpg','맞춤 운동으로 강화합니다')])+'<aside><small>서울 플래그십 월 운영 가정</small><strong>120명</strong><p>활성회원 × 월 40만 원</p><strong>40명</strong><p>월 별도 측정</p><div>직접 인건비 <b>600만 원</b><br>본사 측정팀과 개발 지원</div></aside></div>'+band('측정 → 개별 관리 → 재측정 <b>변화를 확인하며 다시 찾는 스튜디오</b>')
+S[14]['source']='시설 상상도 / 서울 센터 구축 예정 | 회원 수와 단가는 운영 가정'
+S[21]['body']='<div class="town-concept"><figure><button class="zoom">'+pic(A/'sports-town-concept.png','종합 MPS 스포츠타운 상상도')+'</button><figcaption>종합 MPS 스포츠타운 / 장기 구상 상상도</figcaption></figure><div><small>서울에서 시작해, 장기적으로</small><h2>측정과 강화가<br>한곳에서 이어지는<br><em>MPS 스포츠타운</em></h2><p>본사 × 의료기관 × 스튜디오<br>× 멘탈멘토링</p><div class="town-steps">서울 플래그십 → 제휴 네트워크<br>→ 종합 스포츠타운</div></div></div>'
+S[21]['source']='장기 비전 상상도 | 이미지 속 면적과 배치는 구상 예시'
+S[21]['notes']+='\n사용자 제공 스포츠타운 상상도를 장기 비전으로 배치했다. 이미지에 포함된 면적과 시설 배치는 확정 계획이 아니다. 이번 투자금 사용계획은 다음 장표의 서울 플래그십과 전문 조직을 기준으로 한다.'
+REFERENCE_CSS+='''
+.mentor-photo .report-detail img{object-fit:contain;height:254px;width:100%}
+.center-concepts{display:grid;grid-template-columns:1fr 1fr .8fr;gap:24px;margin-bottom:25px}
+.center-concepts figure,.town-concept figure{margin:0;background:#f6f6f8;border-radius:16px;overflow:hidden}
+.center-concepts button,.town-concept button{display:block;border:0;padding:0;background:none;width:100%;cursor:zoom-in}
+.center-concepts img{display:block;width:100%;height:318px;object-fit:contain;background:#202126}
+.center-concepts figcaption{padding:20px;display:flex;flex-direction:column;gap:9px}
+.center-concepts figcaption b{font-size:25px}.center-concepts figcaption span{font-size:16px;color:#67686f}
+.center-concepts aside{background:#f6f6f8;border-radius:16px;padding:25px}
+.center-concepts aside>small{font-size:17px}.center-concepts strong{display:block;font-size:56px;color:#fc582b;margin-top:17px}
+.center-concepts aside p{font-size:23px;margin:5px 0 15px}.center-concepts aside>div{font-size:18px;line-height:1.7;border-top:1px solid #ddd;padding-top:13px}
+.town-concept{display:grid;grid-template-columns:690px 1fr;gap:48px;align-items:center;margin-top:-18px}
+.town-concept img{display:block;width:100%;height:518px;object-fit:contain;background:#172329}
+.town-concept figcaption{padding:14px;text-align:center;font-size:16px;color:#67686f}
+.town-concept small{font-size:20px;color:#67686f}.town-concept h2{font-size:43px;line-height:1.45;margin:20px 0}
+.town-concept p{font-size:24px;line-height:1.65}.town-steps{font-size:23px;line-height:1.8;margin-top:30px;border-top:2px solid #fc582b;padding-top:20px}
+'''
+REFERENCE_CSS+='''
+.center-concepts .zoom{height:318px}.town-concept .zoom{height:518px}
+.center-concepts .zoom img,.town-concept .zoom img{border:0;box-shadow:none}
+'''
+
+# 2026-09-23 founder revision: monthly partner charges, in KRW.
+for r in model:
+ c,p,k=r['clinic_partners'],r['physical_partners'],12*r['partner_ramp']
+ r['clinic_saas_krw']=round(c*1000000*k)
+ r['clinic_certification_krw']=round(c*1000000*k)
+ r['clinic_consumables_agency_krw']=round(c*2000000*k)
+ r['physical_saas_krw']=round(p*1000000*k)
+ r['physical_support_krw']=round(p*1000000*k)
+ r['advertising_agency_krw']=round((c+p)*1000000*k)
+ r.pop('advertising_collections_excluded_krw',None)
+ revenue_keys=['studio_krw','studio_measurement_krw','clinic_saas_krw','clinic_certification_krw','clinic_consumables_agency_krw','physical_saas_krw','physical_support_krw','advertising_agency_krw','evaluation_krw','mental_krw','team_krw']
+ r['total_krw']=sum(r[key] for key in revenue_keys)
+last=model[-1];total=last['total_krw']/1e8
+for r in S:
+ for key in ['title','sub','body','notes','source']:
+  r[key]=r[key].replace('239.972',f'{total:.3f}').replace('240억',f'{total:.0f}억')
+S[15]['body']='<div class="partner-pricing">'+table(['기관당 월 요금','인증 한의원','피지컬센터'],[['플랫폼 구독','100만 원','100만 원'],['인증운영 / 운영지원','100만 원','100만 원'],['소모품대행','200만 원','—'],['기본 합계','400만 원','200만 원'],['광고대행 (별도)','100만 원','100만 원'],['광고대행 포함','500만 원','300만 원']])+'<aside>'+donut([40.8,20.4,20.4],['한의원 기본 (억)','피지컬 기본 (억)','광고대행 (억)'],'81.6억','연 계약매출 가정')+'<p>한의원 100곳 + 피지컬센터 100곳<br>연평균 가동 85% 시나리오</p></aside></div>'
+S[15]['sub']='한의원 월 400만 원, 피지컬센터 월 200만 원에 기관당 광고대행 월 100만 원을 더합니다.'
+S[15]['source']='월 요금 계획 | 2031 각 100곳, 가동 85%, 전 기관 광고대행 이용 가정'
+S[15]['notes']='대표 지시 단가(만원/월): 인증 한의원 플랫폼100 + 인증운영100 + 소모품대행200 =400. 피지컬센터 플랫폼100 + 운영지원100 =200. 광고대행은 양 기관에 각각 월100의 별도 서비스 요금으로 가정. 광고대행 포함 한의원500, 피지컬300. 2031 각100기관×12개월×85% 기준 한의원 기본40.8억, 피지컬 기본20.4억, 광고대행20.4억, 합계81.6억. 기존 공동광고 분담금 모델을 광고대행 서비스 요금 모델로 교체했다. 소모품대행200 및 광고대행100은 회사 청구 매출 가정이며 비용과 이익을 의미하지 않는다. 매체 광고비나 소모품 매입비가 포함된 총취급액인지에 따라 추후 정산 구조를 확정한다. 초기 가맹비와 기관 자체 진료 및 훈련 매출은 제외.'
+S[16]['body']=re.sub(r'<svg.*?</svg>',linechart([str(r['year']) for r in model],[r['total_krw']/1e8 for r in model],'회사 매출 계획 / 억 원'),S[16]['body'],count=1,flags=re.S)
+S[16]['sub']=f'부모의 관리비, 팀 계약, 제휴기관 서비스 매출을 더한 2031년 {total:.3f}억 원 시나리오입니다.'
+S[16]['source']='기관당 광고대행 월 100만 원 포함 | 요금, 기관 수, 고객 수와 가동률은 계획 가정'
+S[16]['notes']+='\n제휴기관 월 요금 갱신: 한의원400만, 피지컬200만, 광고대행 각100만. 2031 제휴기관81.6억을 포함한 전체 매출308.312억. 소모품 및 광고대행 청구액 기준 가정이며 관련 비용을 차감한 이익과 구분한다. 서울 센터 손익 가정은 유지.'
+REFERENCE_CSS+='''
+.partner-pricing{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center}
+.partner-pricing table{font-size:23px}.partner-pricing td{padding:16px 20px}.partner-pricing th{font-size:21px;padding:18px 20px}
+.partner-pricing tr:last-child td{font-weight:800;background:#fff0e6;color:#202126}
+.partner-pricing .donut-layout{grid-template-columns:1fr;justify-items:center;gap:10px}
+.partner-pricing svg{height:275px}.partner-pricing .chart-legend{width:390px;font-size:19px}
+.partner-pricing aside>p{font-size:19px;line-height:1.6;text-align:center;margin-top:18px;color:#67686f}
+'''

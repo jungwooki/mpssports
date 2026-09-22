@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
-import base64,mimetypes,html,json,csv,re,shutil
-D=Path(__file__).resolve().parent; ROOT=D.parent; A=D/'assets'; A.mkdir(exist_ok=True)
+import base64,mimetypes,html,json,csv,re,shutil,hashlib
+D=Path(__file__).resolve().parent; ROOT=D.parent
+REF=ROOT/(D.name+'_1'); A=REF/'assets'; DOC=REF/'참고문서'; DOC.mkdir(parents=True,exist_ok=True)
+WEB=D/'site_assets'; WEB.mkdir(exist_ok=True)
 OLD=ROOT/'20260920 투자제언서'; G=OLD/'@@guide/assets'; IA=OLD/'ir_assets'
 def data(p):
- p=Path(p);return 'data:'+ (mimetypes.guess_type(str(p))[0] or 'application/octet-stream')+';base64,'+base64.b64encode(p.read_bytes()).decode()
+ p=Path(p);raw=p.read_bytes();name=hashlib.sha256(raw).hexdigest()[:24]+p.suffix.lower();dest=WEB/name
+ if not dest.exists():dest.write_bytes(raw)
+ return 'site_assets/'+name
 def pic(p,alt='',cls=''):
  return f'<img class="{cls}" src="{data(p)}" alt="{html.escape(alt)}">'
 def art():return '<div class="hero-boy"><svg viewBox="0 170 555 670"><image href="'+data(G/'soccer-boy-poses-v2.png')+'" width="1536" height="1024"/></svg></div>'
@@ -118,8 +122,8 @@ page='<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="vie
 pret_font='@font-face{font-family:Pretendard;src:url("'+data(IA/'fonts/PretendardVariable.woff2')+'");font-weight:100 900;font-display:block}'
 pret_page=page.replace('</style>',pret_font+'body{font-family:Pretendard,sans-serif}</style>')
 (D/'index_pretendard.html').write_text(pret_page)
-(D/'slide_notes.json').write_text(json.dumps([{k:v for k,v in r.items() if k!='body'} for r in S],ensure_ascii=False,indent=2))
-with (D/'매출모델.csv').open('w',encoding='utf-8-sig',newline='') as f:
+(DOC/'slide_notes.json').write_text(json.dumps([{k:v for k,v in r.items() if k!='body'} for r in S],ensure_ascii=False,indent=2))
+with (DOC/'매출모델.csv').open('w',encoding='utf-8-sig',newline='') as f:
  w=csv.DictWriter(f,fieldnames=list(model[0]));w.writeheader();w.writerows(model)
-(D/'매출모델.json').write_text(json.dumps(model,ensure_ascii=False,indent=2))
+(DOC/'매출모델.json').write_text(json.dumps(model,ensure_ascii=False,indent=2))
 print('Generated',len(S),'slides; revenue scenarios:',[round(r['total_krw']/1e8,3) for r in model])

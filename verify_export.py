@@ -6,11 +6,12 @@ from pptx import Presentation
 from pptx.util import Inches
 import json,re,sys
 D=Path(__file__).resolve().parent
+REF=D.parent/(D.name+'_1');EXPORT=REF/'내보내기';EXPORT.mkdir(parents=True,exist_ok=True)
 PRET='--pretendard' in sys.argv
 FONT='Pretendard' if PRET else 'A2Z'
 SUFFIX='_Pretendard' if PRET else ''
 HTML='index_pretendard.html' if PRET else 'index.html'
-out=D/('preview_pretendard' if PRET else 'preview');out.mkdir(exist_ok=True)
+out=REF/('preview_pretendard' if PRET else 'preview');out.mkdir(exist_ok=True)
 with sync_playwright() as w:
  b=w.chromium.launch(executable_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless=True)
  p=b.new_page(viewport={'width':1600,'height':962},device_scale_factor=1)
@@ -32,7 +33,7 @@ with sync_playwright() as w:
  p.locator('#overview').click();assert p.locator('.slide:visible').count()==n;p.locator('#overview').click()
  p.set_viewport_size({'width':390,'height':844});p.evaluate('show(0)');p.screenshot(path=str(out/'mobile.png'));assert p.evaluate('document.documentElement.scrollWidth')==390
  p.set_viewport_size({'width':1600,'height':962});p.emulate_media(media='print')
- p.pdf(path=str(D/f'SPORTS_MPS_투자제안서_20260922{SUFFIX}.pdf'),width='1600px',height='900px',print_background=True,prefer_css_page_size=True)
+ p.pdf(path=str(EXPORT/f'SPORTS_MPS_투자제안서_20260922{SUFFIX}.pdf'),width='1600px',height='900px',print_background=True,prefer_css_page_size=True)
  result={'font':FONT,'slides':n,'overflow':issues,'broken_images':broken,'js_errors':errors,'font_loaded':p.evaluate("font=>document.fonts.check('800 46px '+font)",FONT),'navigation':'pass','toc':'pass','report_zoom':'pass','overview':'pass','mobile_width':'pass','print':'pass'}
  result['single_line_title_issues']=title_issues
  (out/'validation.json').write_text(json.dumps(result,ensure_ascii=False,indent=2));print(json.dumps(result,ensure_ascii=False));b.close()
@@ -41,9 +42,9 @@ for i in range(n):
  im=Image.open(out/f'{i+1:02}.png');im.thumbnail((390,220));x=i%4*400+5;y=i//4*245+20;board.paste(im,(x,y));d.text((x,y-16),str(i+1),fill='black')
 board.save(out/'전체미리보기.jpg')
 prs=Presentation();prs.slide_width=Inches(16);prs.slide_height=Inches(9)
-notes=json.loads((D/'slide_notes.json').read_text())
+notes=json.loads((REF/'참고문서/slide_notes.json').read_text())
 for i in range(n):
  s=prs.slides.add_slide(prs.slide_layouts[6]);s.shapes.add_picture(str(out/f'{i+1:02}.png'),0,0,width=prs.slide_width,height=prs.slide_height)
  r=notes[i];s.notes_slide.notes_text_frame.text=re.sub('<[^>]+>',' ',r['title']+'\n'+r['sub']+'\n'+r['source']+'\n'+r['notes'])+'\n원본 편집: 동봉 index.html 및 build_deck.py. 본 PPTX는 레이아웃 보존을 위한 슬라이드 이미지형입니다.'
-prs.save(D/f'SPORTS_MPS_투자제안서_20260922{SUFFIX}_발표용.pptx')
+prs.save(EXPORT/f'SPORTS_MPS_투자제안서_20260922{SUFFIX}_발표용.pptx')
 print('PDF and presentation PPTX exported')
