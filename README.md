@@ -1,6 +1,6 @@
 # SPORTS MPS 투자제안서
 
-GitHub 업로드용 발표 페이지입니다. 전체27장, A2Z와 Pretendard 두 글꼴 버전을 제공합니다.
+GitHub 업로드용 발표 페이지입니다. 전체28장, A2Z와 Pretendard 두 글꼴 버전을 제공합니다.
 
 - `index.html`: A2Z 버전
 - `index_pretendard.html`: Pretendard 버전

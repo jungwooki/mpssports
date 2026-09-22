@@ -253,7 +253,7 @@ REFERENCE_CSS+='''
 .mission-reference .mission-partners{font-size:25px;white-space:nowrap;letter-spacing:-.4px}
 '''
 
-REFERENCE_CSS+=''''
+REFERENCE_CSS+='''
 .overseas-cards article>small{font-size:15px;font-weight:700;letter-spacing:.3px}
 .official-logo img{width:295px;height:73px}
 .overseas-cards article:first-child .official-logo img{width:320px}
@@ -326,4 +326,340 @@ REFERENCE_CSS+='''
 .partner-pricing .donut-layout{grid-template-columns:1fr;justify-items:center;gap:10px}
 .partner-pricing svg{height:275px}.partner-pricing .chart-legend{width:390px;font-size:19px}
 .partner-pricing aside>p{font-size:19px;line-height:1.6;text-align:center;margin-top:18px;color:#67686f}
+'''
+
+# Audit fixes: summary text split by markup, removed cover copy, stale speaker notes.
+S[2]['body']=re.sub(r'(<div class="summary-outcome">.*?<small>5년차 매출 시나리오</small><strong>)\d+(<span>억 원</span>)',lambda m:m[1]+f'{total:.0f}'+m[2],S[2]['body'],flags=re.S)
+S[0]['body']=re.sub(r'<div class="cover-tags">.*?</div>','',S[0]['body'],flags=re.S)
+S[8]['body']=S[8]['body'].replace('이 리포트에서 읽는 것','멘토링은 이렇게 진행합니다')
+S[16]['notes']='연도별 회사 매출 시나리오(억원): '+', '.join(f"{r['year']}년 {r['total_krw']/1e8:.3f}" for r in model)+'.\n'
+S[16]['notes']+='2031년 구성: 직영 회원97.920억 + 직영 별도 측정9.792억 + 한의원 기본40.800억 + 피지컬센터 기본20.400억 + 광고대행20.400억 + 독립평가72.000억 + 멘탈32.000억 + 팀계약15.000억 =308.312억.\n'
+S[16]['notes']+='파트너 월 요금: 한의원 플랫폼100만+인증운영100만+소모품대행200만=400만원. 피지컬센터 플랫폼100만+운영지원100만=200만원. 각 기관 광고대행 월100만원 별도. 각100기관, 연평균 가동85%, 전 기관 광고대행 이용 가정. 소모품대행 및 광고대행은 회사 청구 매출로 가정하며 이익을 의미하지 않는다. 매입비 및 매체비 포함 여부는 계약에서 확정한다. 기관 자체 매출과 초기 가맹비는 제외.\n'
+S[16]['notes']+='서울 1개 센터 월 매출: 활성회원120명×40만원=4800만원, 별도 측정40명×12만원=480만원, 팀5곳×연300만원÷12=125만원, 합계5405만원. 인건비600만원+임차600만원+기타500만원+변동비540.5만원=2240.5만원. 운영 잉여3164.5만원은 본사배부, 감가상각, 세금 전. 센터 측정 고객과 독립평가 고객은 별도 고객으로 가정하며 팀 계약은 전체 팀계약 매출에 한 번만 포함. 직영20곳 확대는 추가 조달 및 공급능력 검증을 전제한다.'
+
+# Printed page 17: named adjacent services and a concrete national expansion model.
+comparison_sources=[
+ ('함소아','https://hamsoa.net/'),
+ ('하이키','https://highki.com/kor/clinic/clinic02.php'),
+ ('하늘병원','https://www.smcsky.com/content/clinic_08'),
+ ('세종스포츠정형외과','https://www.sjsclinic.com/'),
+ ('플코','https://plco.pro/gym'),
+ ('솔리드 기업 공고','https://spobiz.kspo.or.kr/job/front/job/search/recruit/view.do?recruitSeq=14928'),
+ ('마인드카페','https://center.mindcafe.co.kr/')]
+S[17]['title']='분야별 전문 서비스를, <em>선수의 성장 여정으로 연결합니다</em>'
+S[17]['sub']='10–15세 선수에 집중하는 MPS: 바이오밴딩 기반 리포트와 지역 제휴 운영을 함께 확장합니다.'
+S[17]['cat']='경쟁사 분석 / 분야별 비교와 전국 확장'
+S[17]['cls']='sector-comparison'
+rows=[
+ ['성장클리닉','함소아 / 하이키','성장 검사와 진료<br>소아 건강 및 생활 관리','성장단계를 공통 기준으로<br>피지컬과 멘탈 관리까지 연결'],
+ ['스포츠 재활','하늘병원<br>세종스포츠정형외과','스포츠 손상 진료<br>재활과 운동 복귀 지원','의료기관의 진료와 연계해<br>일상 컨디셔닝과 성장 추적'],
+ ['피지컬센터','플코 / 솔리드','플코: 측정과 훈련, 앱 관리<br>솔리드: 선수 훈련과 재활 트레이닝','바이오밴딩 + 기능평가<br>성장단계별 강화와 재측정'],
+ ['멘탈센터','마인드카페','심리검사와 상담<br>지역 센터와 비대면 상담','바이오밴딩 + 인지검사<br>선수 출신 멘토와 일상 기록']]
+S[17]['body']='<div class="sector-table">'+table(['분야','비교 기관','공개 서비스의 중심','MPS가 연결할 관리 (계획)'],rows)+'</div><div class="national-heading"><b>전국으로 확장하는 방법</b><span>서울에서 운영 검증 → 지역 제휴기관에 적용 (예정)</span></div><div class="national-route"><article><small>01 / 본사</small><h3>공통 리포트와 교육</h3><p>측정 기준, 해석, 품질관리</p></article><i>→</i><article><small>02 / 지역</small><h3>기존 전문인력과 시설</h3><p>의료기관 × 스튜디오 × 멘토</p></article><i>→</i><article><small>03 / 반복 매출</small><h3>기관 월 계약과 재측정</h3><p>구독과 운영지원, 누적 기록</p></article></div>'
+S[17]['source']='2026.09.23 공개 자료 | '+' / '.join(link(url,name) for name,url in comparison_sources)+'<br>서비스 중심 비교 / MPS는 개발 및 운영 고도화 단계 / 전국 제휴 확장 예정'
+S[17]['notes']='비교 범위는 공개 서비스의 중심이며 경쟁사의 기능 부재나 MPS의 검증된 임상 우위를 뜻하지 않는다. 함소아는 소아 건강과 성장 진료 및 다지점 운영, 하이키는 성장종합검사와 성장 및 사춘기 관리를 공개한다. 하늘병원과 세종스포츠정형외과는 스포츠 손상 진료 및 재활과 운동 복귀 서비스를 제공한다. 사용자 지칭 세종스포츠클리닉은 공식 의료기관명 세종스포츠정형외과의원으로 표기했다. 플코는 측정, 훈련, 앱 및 팀 관리 서비스를 제공한다. 솔리드는 기업이 직접 게시한 국민체육진흥공단 채용공고에서 엘리트 선수 트레이닝, 스포츠 재활 트레이닝, 축구팀 트레이닝을 확인했다. 마인드카페는 심리검사와 상담, 지역 센터와 비대면 상담을 제공한다. 각 비교 기관은 MPS와 협약한 기관 목록이 아니다. 함소아와 마인드카페 등도 지역 확장 모델을 보유하므로 전국 확장 가능성을 MPS만의 독점적 특성으로 주장하지 않는다.\\nMPS의 전략적 차별화는 10–15세 선수에 집중하고 바이오밴딩을 공통 해석 맥락으로 사용하며 기능평가 및 인지검사 기반 리포트를 지역 전문가의 관리로 연결하려는 운영 설계다. 본사는 서울 플래그십에서 측정 절차, 리포트, 교육과 품질관리 기준을 검증한 뒤 지역의 기존 의료기관과 스튜디오에 적용할 계획이다. 전국 확장 시 모든 시설을 본사가 직접 구축할 필요를 줄이고 기관 구독과 운영지원의 반복 계약을 설계한다. 실제 확장 가능성은 제휴 전환율, 기관별 활성 선수 수, 재측정률, 계약 유지율과 품질관리 비용으로 검증해야 한다. 초기 네트워크 접점과 봉사대기 인원은 유료 제휴계약 실적과 구분한다.\\n확인 출처:\\n'+'\\n'.join(name+': '+url for name,url in comparison_sources)
+REFERENCE_CSS+='''
+.sector-comparison .content{top:235px;bottom:110px}
+.sector-table table{table-layout:fixed;font-size:21px}
+.sector-table th{padding:14px 18px;font-size:18px}
+.sector-table td{padding:13px 18px;line-height:1.45;vertical-align:middle}
+.sector-table th:nth-child(1){width:13%}.sector-table th:nth-child(2){width:23%}.sector-table th:nth-child(3){width:31%}.sector-table th:nth-child(4){width:33%;background:#8874b8}
+.sector-table td:last-child{background:#f0edf7;font-weight:700}
+.sector-table td:nth-child(2){font-weight:700}
+.national-heading{display:flex;align-items:center;gap:25px;margin:20px 0 12px}
+.national-heading b{font-size:24px}.national-heading span{font-size:17px;color:#67686f}
+.national-route{display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr;gap:13px;align-items:center}
+.national-route article{background:#f6f6f8;border-radius:14px;padding:15px 20px}
+.national-route small{font-size:14px;color:#8874b8}.national-route h3{font-size:24px;margin:7px 0 3px}
+.national-route p{font-size:18px;color:#67686f}.national-route>i{font-style:normal;font-size:28px;color:#fc582b;text-align:center}
+.sector-comparison footer .source{font-size:10.5px}
+'''
+(DOC/'경쟁서비스_비교근거_20260923.md').write_text('# 17페이지 비교 근거\n\n공개 자료 확인: 2026-09-23\n\n'+'\n'.join('- ['+name+']('+url+')' for name,url in comparison_sources)+'\n\n'+S[17]['notes'].replace('\\n','\n'))
+S[17]['notes']=S[17]['notes'].replace('\\n','\n')
+REFERENCE_CSS+='''
+.national-heading{margin-top:16px}
+.national-route article{padding:10px 20px}
+.national-route h3{margin-top:5px}
+'''
+
+# Graphic alternative: qualitative positioning, with the MPS target explicitly planned.
+S[17]['title']='성장기 선수의 통합관리, <em>MPS가 넓혀갈 자리입니다</em>'
+S[17]['sub']='각 분야의 전문성을 바이오밴딩 기반 기록으로 연결하고, 지역 제휴기관으로 확장합니다.'
+S[17]['cls']='sector-comparison quadrant-comparison'
+S[17]['body']='''<div class="competitive-graphic" role="img" aria-label="공개 서비스 중심을 해석한 개념도. 가로축은 일상 건강에서 선수와 경기 현장 중심, 세로축은 분야별 전문관리에서 성장 피지컬 멘탈 연계. MPS의 성장기 선수 통합관리 지향점은 예정입니다.">
+<div class="q-y-top">성장 + 피지컬 + 멘탈 연계</div>
+<div class="q-plane"><div class="q-region q-r1"></div><div class="q-region q-r2"></div><div class="q-region q-r3"></div><div class="q-region q-r4"></div><div class="q-axis-x"></div><div class="q-axis-y"></div>
+<div class="q-node q-growth"><small>성장클리닉</small><b>함소아 <span>/</span> 하이키</b><p>성장 검사와 진료</p></div>
+<div class="q-node q-mind"><small>멘탈센터</small><b>마인드카페</b><p>심리검사와 상담</p></div>
+<div class="q-node q-rehab"><small>스포츠 재활</small><b>하늘병원 <span>/</span> 세종스포츠정형외과</b><p>손상 진료와 운동 복귀</p></div>
+<div class="q-node q-physical"><small>피지컬센터</small><b>플코 <span>/</span> 솔리드</b><p>선수 측정과 훈련</p></div>
+<div class="q-mps"><small>10–15세 선수 통합관리 / 지향점 (예정)</small><b>MPS</b><p>바이오밴딩 기반 리포트<br>기능평가 + 인지검사 + 성장 추적</p></div>
+<div class="q-space">선수 한 명의 기록으로<br><b>전문 서비스를 연결</b></div>
+</div><span class="q-x-left">일상 건강 중심</span><span class="q-x-right">선수와 경기 현장 중심 →</span><span class="q-y-bottom">분야별 전문관리</span>
+</div><div class="graphic-scale"><div class="scale-lead"><small>전국 확장 설계</small><b>공통 기준을 지역으로</b></div><div class="scale-step"><i>01</i><span><b>본사 리포트와 교육</b><small>측정 기준과 품질관리</small></span></div><em>→</em><div class="scale-step"><i>02</i><span><b>지역 전문기관</b><small>의료기관 × 스튜디오 × 멘토</small></span></div><em>→</em><div class="scale-step"><i>03</i><span><b>월 계약과 재측정</b><small>반복 매출과 누적 기록</small></span></div></div>'''
+S[17]['source']='공개 서비스 중심에 대한 정성적 배치 | MPS 위치는 지향점, 전국 제휴 확장 예정<br>'+' / '.join(link(url,name) for name,url in comparison_sources)
+S[17]['notes']+='\n그래픽 해석: 가로축은 일상 건강관리에서 선수와 경기 현장 관리로의 초점, 세로축은 분야별 전문관리에서 성장/피지컬/멘탈을 함께 연결하는 관리로의 초점이다. 경쟁 기관은 앞서 확인한 공개 서비스 중심을 정성적으로 묶어 표시했으며 점수, 우열, 기능 부재, 시장점유율이나 실측 좌표가 아니다. 같은 분야의 두 기관이 동일 기능을 모두 제공한다는 뜻도 아니다. 플코는 측정과 훈련 및 앱 관리, 솔리드는 선수 훈련과 재활 트레이닝을 공개한다. MPS의 강조 영역은 향후 지향점으로 현재 검증된 통합 플랫폼 성과를 의미하지 않는다. 노드 크기는 매출, 고객 수 또는 시장 규모를 뜻하지 않는다.'
+REFERENCE_CSS+='''
+.quadrant-comparison .content{top:229px}
+.competitive-graphic{height:441px;position:relative}
+.q-y-top{position:absolute;top:0;left:560px;width:400px;text-align:center;font-size:17px;font-weight:700;color:#67686f}
+.q-plane{position:absolute;left:25px;right:0;top:39px;height:340px}
+.q-region{position:absolute;width:50%;height:50%;background:#fafafa}
+.q-r1{top:0;left:0;border-top-left-radius:25px}.q-r2{top:0;right:0;background:#faf7f4;border-top-right-radius:25px}
+.q-r3{bottom:0;left:0;background:#f7f7f9;border-bottom-left-radius:25px}.q-r4{bottom:0;right:0;background:#f6f4f9;border-bottom-right-radius:25px}
+.q-axis-x{position:absolute;top:50%;left:0;right:0;border-top:1px dashed #c7c6cc}
+.q-axis-y{position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed #c7c6cc}
+.q-axis-y:before{content:'↑';position:absolute;top:-25px;left:-7px;font-size:22px;color:#aaa7b2}
+.q-node{position:absolute;border:1px solid #e1dce9;border-radius:18px;background:white;padding:12px 18px;box-shadow:0 3px 12px #20212604}
+.q-node small{font-size:13px;color:#8874b8;display:block;margin-bottom:5px}
+.q-node b{font-size:21px;white-space:nowrap}.q-node b span{font-weight:400;color:#b4b0bb;margin:0 5px}
+.q-node p{font-size:15px;line-height:1.4;color:#77747e;margin-top:5px}
+.q-growth{left:45px;top:219px;width:270px}
+.q-mind{left:340px;top:188px;width:275px}
+.q-rehab{left:780px;top:228px;width:375px}.q-rehab b{font-size:18px}
+.q-physical{left:1165px;top:136px;width:270px}
+.q-mps{position:absolute;top:15px;left:800px;width:320px;padding:15px 22px;border:1.5px dashed #fc582b;border-radius:24px;background:#fff0e6}
+.q-mps small{display:block;font-size:12px;color:#a05a40}.q-mps>b{font-size:45px;line-height:1.25;display:block;color:#fc582b;margin:3px 0}
+.q-mps p{font-size:16px;line-height:1.5;color:#514945}
+.q-space{position:absolute;left:80px;top:43px;font-size:22px;line-height:1.7;color:#99959e}.q-space b{font-size:26px;color:#77717f}
+.q-x-left,.q-x-right,.q-y-bottom{position:absolute;font-size:16px;color:#77747e;top:393px}
+.q-x-left{left:30px}.q-x-right{right:0}.q-y-bottom{left:620px;width:250px;text-align:center}
+.graphic-scale{display:flex;align-items:center;gap:23px;background:#f6f6f8;border-radius:20px;padding:22px 25px;margin-top:7px}
+.scale-lead{width:270px;border-right:1px solid #dcdbe2;padding-right:20px}
+.scale-lead small{display:block;color:#8874b8;font-size:14px;margin-bottom:8px}.scale-lead>b{font-size:23px}
+.scale-step{display:flex;align-items:center;gap:12px;flex:1}.scale-step>i{font-style:normal;background:#ece7f3;color:#8874b8;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.scale-step b{font-size:20px;display:block;white-space:nowrap}.scale-step small{display:block;font-size:14px;color:#77747e;margin-top:9px;white-space:nowrap}
+.graphic-scale>em{font-size:25px}
+'''
+(DOC/'경쟁서비스_비교근거_20260923.md').write_text('# 17페이지 그래픽 비교 근거\n\n'+'\n'.join('- ['+name+']('+url+')' for name,url in comparison_sources)+'\n\n'+S[17]['notes'])
+
+# Page 17: spacious circular positioning diagram, presentation-only footer removed.
+S[17]['title']='성장기 선수의 통합관리, <em>MPS의 차별점입니다</em>'
+S[17]['sub']=''
+S[17]['cls']='circle-positioning'
+S[17]['source']=''
+S[17]['body']='''<div class="circle-map" role="img" aria-label="서비스 초점을 비교하는 개념도. 일상 건강과 선수 관리, 전문 분야와 통합관리의 두 축. MPS는 바이오밴딩 기반 통합관리를 지향합니다.">
+<div class="circle-axis horizontal"></div><div class="circle-axis vertical"></div>
+<span class="circle-axis-label top">통합관리</span><span class="circle-axis-label bottom">전문 분야 중심</span><span class="circle-axis-label left">일상 건강</span><span class="circle-axis-label right">선수 관리</span>
+<div class="peer-circle growth-circle"><small>성장클리닉</small><b>함소아<br>하이키</b><span>키 성장</span></div>
+<div class="peer-circle mind-circle"><small>멘탈센터</small><b>마인드카페</b><span>심리상담</span></div>
+<div class="peer-circle rehab-circle"><small>스포츠 재활</small><b>하늘병원<br>세종스포츠정형외과</b><span>치료와 복귀</span></div>
+<div class="peer-circle plco-circle"><small>피지컬 관리</small><b>플코</b><span>측정과 훈련</span></div>
+<div class="mps-circle"><small>10–15세 성장기 선수</small><b>MPS</b><strong>바이오밴딩</strong><span>성장 × 피지컬 × 멘탈</span><em>통합관리 지향</em></div>
+<div class="circle-keywords"><span>성장단계</span><i>+</i><span>기능평가</span><i>+</i><span>인지검사</span></div>
+</div>'''
+S[17]['notes']+='\n최종 표현: 사용자 요청에 따라 솔리드, 하단 출처/브랜드, 전국 확장 흐름도를 발표 화면에서 제거했다. 출처와 비교 해석 근거는 이 발표자 노트와 별도 근거 문서에 보존한다. 원의 위치와 크기는 서비스 초점을 설명하는 개념 표현이며 정량 점수나 시장 규모가 아니다. 성장클리닉은 키 성장, 멘탈센터는 심리상담, 스포츠 재활은 치료와 복귀, 플코는 측정과 훈련을 대표 키워드로 선택했다. 이는 각 기관의 전체 서비스를 제한하는 설명이 아니다. MPS는 통합관리 지향점으로 표시한다.'
+REFERENCE_CSS+='''
+.circle-positioning .heading{margin-top:23px}
+.circle-positioning .content{top:204px;bottom:46px}
+.circle-positioning footer{display:none}
+.circle-map{position:relative;width:1480px;height:640px}
+.circle-axis{position:absolute;background:#dedde3}
+.circle-axis.horizontal{left:30px;right:30px;top:286px;height:1px}
+.circle-axis.vertical{left:720px;top:44px;bottom:35px;width:1px}
+.circle-axis.horizontal:after{content:'';position:absolute;right:0;top:-3px;width:7px;height:7px;border-top:1px solid #b8b5bf;border-right:1px solid #b8b5bf;transform:rotate(45deg)}
+.circle-axis.vertical:before{content:'';position:absolute;left:-3px;top:0;width:7px;height:7px;border-top:1px solid #b8b5bf;border-left:1px solid #b8b5bf;transform:rotate(45deg)}
+.circle-axis-label{position:absolute;color:#85818d;font-size:18px;letter-spacing:.2px;background:#fff;padding:0 12px}
+.circle-axis-label.top{top:8px;left:655px;width:130px;text-align:center}
+.circle-axis-label.bottom{bottom:3px;left:620px;width:200px;text-align:center}
+.circle-axis-label.left{top:253px;left:17px}.circle-axis-label.right{top:253px;right:18px}
+.peer-circle{position:absolute;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;border-radius:50%;background:#f6f5f8;border:1px solid #e8e5ee;width:176px;height:176px}
+.peer-circle small{font-size:13px;color:#91869f;margin-bottom:10px}
+.peer-circle b{font-size:23px;line-height:1.4;color:#46424d;font-weight:700}
+.peer-circle>span{font-size:15px;color:#8a8493;margin-top:12px}
+.growth-circle{left:170px;top:366px}.mind-circle{left:411px;top:323px}
+.rehab-circle{left:835px;top:367px;width:202px;height:202px}.rehab-circle b{font-size:18px;line-height:1.5}
+.plco-circle{left:1156px;top:305px}
+.mps-circle{position:absolute;left:933px;top:2px;width:250px;height:250px;border-radius:50%;border:1.5px solid #fc582b;background:#fff2eb;display:flex;align-items:center;justify-content:center;flex-direction:column;box-shadow:0 0 0 14px #fffaf7}
+.mps-circle small{font-size:13px;color:#936b5b;margin-bottom:5px}.mps-circle>b{font-size:58px;line-height:1.2;letter-spacing:-1px;color:#fc582b}
+.mps-circle strong{font-size:22px;color:#4b3d38;margin-top:4px}.mps-circle>span{font-size:16px;color:#79655d;margin-top:9px}
+.mps-circle em{font-size:12px;color:#a08b82;margin-top:9px}
+.circle-keywords{position:absolute;top:112px;left:1240px;display:grid;grid-template-columns:1fr;text-align:center;gap:5px;color:#8874b8;font-size:17px}
+.circle-keywords i{font-style:normal;color:#c2b8cd;font-size:13px}
+'''
+(DOC/'경쟁서비스_비교근거_20260923.md').write_text('# 17페이지 비교 근거\n\n화면은 원형 개념도로 간소화. 자료 출처는 발표자 노트에 보존.\n\n'+S[17]['notes'])
+
+# Mental service definition: assessment followed by mentoring.
+S[2]['sub']='멘탈평가와 멘토링, 피지컬 기능평가와 강화를 바이오밴딩 기반 성장관리로 연결합니다.'
+S[2]['body']=S[2]['body'].replace('바이오밴딩 + 인지검사','스포츠심리 + 인지발달검사').replace('멘탈 멘토링</b>','멘탈평가와 멘토링</b>')
+S[3]['body']=S[3]['body'].replace('측정과 상담이 필요한 성장기','측정과 지원이 필요한 성장기')
+S[6]['body']=S[6]['body'].replace('바이오밴딩 + 인지검사','스포츠심리 + 인지발달검사')
+S[7]=service('해결 방법 / M 멘탈평가',
+ '스포츠심리와 인지발달을 평가해, <em>멘탈멘토링으로 연결합니다</em>',
+ '스포츠심리검사와 인지발달검사 등으로 강점과 과제를 파악하고, 바이오밴딩 맥락에서 멘토링 방향을 정합니다.',
+ 'mental-2.png','mental-focus.png','평가 결과를 멘토링의 출발점으로',
+ '멘탈평가 후<br><em>멘탈멘토링.</em>',
+ ['스포츠심리검사와 인지발달검사','선수의 강점과 과제를 리포트로','평가 결과에 맞춘 멘토링 계획'],
+ ['멘탈평가','리포트 해석','멘탈멘토링'],
+ '멘탈평가 이용료 → 멘탈멘토링 프로그램',
+ 'MPS의 멘탈 서비스는 스포츠심리검사와 인지발달검사 등을 통한 멘탈평가 후 멘탈멘토링을 제공하는 모델이다. 바이오밴딩은 성장단계를 함께 이해하는 해석 맥락이다. 선수의 강점과 과제를 리포트로 정리하고 프로선수 출신 멘토가 이를 멘토링에 활용한다. 심리치료 또는 일반 심리상담 프로그램으로 설명하지 않는다. 사용자가 유럽 프로팀 수준의 검사라고 설명했으나 구체적인 검사명과 적용 팀 및 기관 근거가 제공되기 전에는 검증된 동등성이나 정확도를 발표 문구로 단정하지 않는다. 리포트 이미지는 가상 선수 예시이며 실제 검사 항목과 도구 매핑은 제품 고도화 과정에서 정리한다.')
+S[7]['no']=8
+S[8]['sub']='멘탈평가 후, 매일 또는 격일의 다이어리를 바탕으로 프로선수 출신 멘토가 멘탈멘토링을 진행합니다.'
+S[8]['body']=S[8]['body'].replace('프로선수 출신 멘토(심리상담사)가 확인','프로선수 출신 멘토가 기록 확인').replace('일상의 기록을 바탕으로 개별 멘토링','멘탈평가와 일상 기록으로 멘토링').replace('멘탈 멘토와 선수의 상담 이미지','멘탈 멘토와 선수의 멘토링 이미지')
+S[8]['notes']='스포츠심리검사, 인지발달검사 등을 통한 멘탈평가를 먼저 실시하고 그 결과와 일상의 기록을 멘탈멘토링으로 연결한다. 프로선수 출신 멘토는 심리상담사 자격을 가진 인력으로 사용자에게 소개되었지만 제공 서비스는 멘탈멘토링이다. 선수는 매일 또는 격일로 멘탈 다이어리를 기록하고 멘토가 이를 확인해 개별 멘토링과 변화 리뷰를 진행한다. 기록 주기가 멘토의 응답시간 보장을 의미하지 않는다. 모바일앱은 출시 예정이며 서비스 운영은 고도화 중이다. 리포트는 가상 선수 샘플이다.'
+S[17]['body']=S[17]['body'].replace('<em>통합관리 지향</em>','<em>통합관리 지향</em>').replace('<span>인지검사</span>','<span>멘탈평가</span>').replace('</div>\n<div class="circle-keywords">','</div>\n<div class="circle-keywords">')
+S[17]['body']=S[17]['body'].replace('<span>성장 × 피지컬 × 멘탈</span>','<span>성장 × 피지컬 × 멘탈</span><div class="circle-mental">멘탈평가 → 멘탈멘토링</div>')
+S[17]['body']=S[17]['body'].replace('<span>멘탈평가</span></div>','<span>스포츠심리검사</span><i>+</i><span>인지발달검사</span></div>')
+S[18]['body']=S[18]['body'].replace('바이오밴딩 + 인지검사 기반','스포츠심리검사 + 인지발달검사').replace('의료기관, 프로선수 출신 멘토, 스튜디오','의료기관, 멘탈멘토링, 스튜디오')
+S[18]['sub']='바이오밴딩 기반으로 멘탈평가 후 멘탈멘토링, 기능평가 후 컨디셔닝을 연결합니다.'
+S[23]['body']=S[23]['body'].replace('현장 / 상담','현장 / 멘토링').replace('운영 / 상담','운영 / 지원').replace('교육 상담 총괄','교육 멘토링 운영')
+S[25]['sub']=S[25]['sub'].replace('리포트 상담','리포트 해석')
+# Remove earlier explanatory history that mislabels the mental product.
+for i in [2,6,17,18,23,25,26]:
+ S[i]['notes']=S[i]['notes'].replace('인지검사','인지발달검사').replace('본사 상담','멘탈멘토링').replace('평가–상담','평가–멘토링').replace('리포트 상담','리포트 해석')
+S[2]['notes']+='\n최신 멘탈 서비스 정의: 스포츠심리검사와 인지발달검사 등을 통한 멘탈평가 → 멘탈멘토링.'
+S[17]['notes']+='\nMPS의 멘탈 차별점은 스포츠심리검사 및 인지발달검사 등을 통한 멘탈평가 후 프로선수 출신 멘토의 멘탈멘토링으로 연결하는 것이다. 마인드카페의 심리상담 표기는 해당 경쟁기관 서비스에 관한 설명으로 유지했다.'
+REFERENCE_CSS+='''
+.circle-mental{font-size:14px;color:#a65135;font-weight:700;margin-top:8px}
+.circle-positioning .mps-circle em{margin-top:6px;font-size:11px}
+.circle-positioning .mps-circle>b{font-size:52px}
+.circle-positioning .circle-keywords{top:94px;font-size:15px;left:1230px}
+'''
+(DOC/'멘탈서비스_정의.md').write_text('# MPS 멘탈 서비스\n\n스포츠심리검사 + 인지발달검사 등 → 멘탈평가 리포트 → 멘탈멘토링 → 일상 기록과 리뷰.\n\n프로선수 출신 멘토가 평가 결과와 다이어리를 바탕으로 멘토링한다. 모바일앱은 출시 예정.\n\n대표 설명: 유럽 프로팀 수준의 검사. 외부 발표 비교 근거에 사용할 검사명과 적용 팀/기관 확인 대기.\n')
+
+# Founder identifies PCDEQ as the basis of mental assessment.
+PCDEQ_RESEARCH='https://pubmed.ncbi.nlm.nih.gov/31607218/'
+PCDEQ_ORIGINAL='https://pubmed.ncbi.nlm.nih.gov/21812724/'
+S[7]['title']='PCDEQ 기반 멘탈평가, <em>선수의 멘탈멘토링으로 이어집니다</em>'
+S[7]['sub']='선수 발달의 심리적 특성을 평가하고, 인지발달검사와 성장단계 해석을 더해 멘토링 방향을 정합니다.'
+S[7]['body']=S[7]['body'].replace('스포츠심리검사와 인지발달검사','PCDEQ 기반 스포츠심리평가').replace('선수의 강점과 과제를 리포트로','인지발달검사로 이해를 보완').replace('평가 결과에 맞춘 멘토링 계획','강점과 과제에 맞춘 멘토링 계획').replace('멘탈평가 후<br>','PCDEQ 기반 평가 후<br>')
+S[7]['source']=link(PCDEQ_RESEARCH,'잉글랜드 프로 아카데미 11–16세 선수 대상 PCDEQ 연구')+' | 가상 리포트 샘플 / MPS 적용 고도화 중'
+S[7]['notes']='MPS는 PCDEQ 기반 멘탈평가 후 멘탈멘토링을 제공한다는 대표 설명을 반영했다. PCDEQ의 정식 명칭은 Psychological Characteristics of Developing Excellence Questionnaire이며 선수 발달에 필요한 심리적 특성을 평가하는 질문지다. 인지발달검사는 별도 구성요소로 제시하며 PCDEQ 자체를 인지발달검사로 설명하지 않는다. 평가 결과, 바이오밴딩의 성장 맥락, 일상 기록을 프로선수 출신 멘토의 멘탈멘토링에 활용한다. 실제 MPS 검사 버전, 번안 문항, 점수 산식 및 인지발달검사 도구는 별도 확인 대상이다. 리포트 샘플의 척도를 원 PCDEQ의 검증된 척도와 동일하다고 단정하지 않는다.\nSaward 등 연구는 잉글랜드 프로 아카데미의 11–16세 선수111명에게 PCDEQ를 적용했다. 연구에서의 사용은 모든 프로팀의 표준 운영 또는 MPS 서비스와 동등한 성능을 입증하는 의미가 아니다. 대표가 제시한 비교 국가에는 잉글랜드, 네덜란드, 벨기에가 포함된다. 이번 장표에서는 확인한 잉글랜드 연구를 근거로 사용했다.\n원 도구 개발 연구: '+PCDEQ_ORIGINAL+'\n아카데미 선수 연구: '+PCDEQ_RESEARCH
+for i in [2,6]:
+ S[i]['body']=S[i]['body'].replace('스포츠심리 + 인지발달검사','PCDEQ + 인지발달검사')
+ S[i]['notes']+='\n멘탈평가는 대표 설명에 따라 PCDEQ 기반으로 표기. 인지발달검사는 별도 구성요소. PCDEQ 연구: '+PCDEQ_RESEARCH
+S[8]['sub']='PCDEQ 기반 멘탈평가 후, 매일 또는 격일의 다이어리를 바탕으로 프로선수 출신 멘토가 멘탈멘토링을 진행합니다.'
+S[8]['notes']='PCDEQ 기반 멘탈평가와 별도 인지발달검사 등의 결과를 멘탈멘토링으로 연결한다. '+S[8]['notes']
+S[17]['body']=S[17]['body'].replace('<span>스포츠심리검사</span>','<span>PCDEQ 멘탈평가</span>')
+S[17]['notes']+='\nPCDEQ 기반 스포츠심리평가와 인지발달검사를 분리해 표기했다. 확인 연구: '+PCDEQ_RESEARCH
+S[18]['body']=S[18]['body'].replace('스포츠심리검사 + 인지발달검사','PCDEQ 기반 평가 + 인지발달검사')
+S[18]['notes']+='\nMPS의 멘탈평가는 PCDEQ 기반이라는 대표 설명을 반영했다. 인지발달검사는 별도 항목이다.'
+(DOC/'멘탈서비스_정의.md').write_text('# MPS 멘탈 서비스\n\nPCDEQ 기반 멘탈평가 + 별도 인지발달검사 → 리포트 해석 → 멘탈멘토링 → 일상 기록과 리뷰. 바이오밴딩은 성장단계 해석 맥락.\n\nPCDEQ: Psychological Characteristics of Developing Excellence Questionnaire. 선수 발달의 심리적 특성을 평가하는 질문지.\n\n대표 제공 비교 대상: 잉글랜드, 네덜란드, 벨기에 프로산하팀. 확인된 연구는 잉글랜드 프로 아카데미 선수 대상 연구이며, 국가별 전체 채택 또는 MPS와의 성능 동등성을 의미하지 않는다.\n\n- [원 도구 개발 연구]('+PCDEQ_ORIGINAL+')\n- [잉글랜드 프로 아카데미 선수 연구]('+PCDEQ_RESEARCH+')\n\n'+S[7]['notes'])
+(DOC/'경쟁서비스_비교근거_20260923.md').write_text('# 17페이지 비교 근거\n\n'+S[17]['notes'])
+
+# Printed page 18: MPS brand hierarchy in the direct comparison.
+S[18]['cls']='plco-brand-comparison'
+S[18]['title']='플코(PLCO)와 MPS, <em>성장단계부터 관리가 달라집니다</em>'
+S[18]['body']=table(['비교 기준','<span class="compare-brand">PLCO</span><small>공개 서비스</small>','<span class="compare-brand">SPORTS MPS</span><small>10–15세 성장기 선수 통합관리</small>'],[
+ ['대상','유소년 및 엘리트 팀','<strong>10–15세 성장기 선수</strong>'],
+ ['피지컬','피지컬 측정, 리포트, 훈련','<strong>바이오밴딩</strong><span class="compare-plus"> + </span><b>기능평가</b>'],
+ ['멘탈','공개 서비스 범위 참고','<strong>PCDEQ 기반 멘탈평가</strong><small>인지발달검사 + 멘탈멘토링</small>'],
+ ['후속 서비스','앱, 웹, 오프라인 짐','<b>의료기관 × 스튜디오 × 멘탈멘토링</b><small>성장단계 기반 측정 → 강화 → 재측정</small>']])
+REFERENCE_CSS+='''
+.plco-brand-comparison .content{top:251px}
+.plco-brand-comparison table{table-layout:fixed;border-collapse:separate;border-spacing:0}
+.plco-brand-comparison th{padding:21px 25px;background:#f2f2f4;color:#74747d;font-size:17px;vertical-align:middle}
+.plco-brand-comparison th:first-child{width:13%;background:#fff;color:#77717f}
+.plco-brand-comparison th:nth-child(2){width:32%;border-top-left-radius:16px}
+.plco-brand-comparison th:last-child{width:55%;background:#fc582b;color:white;border-radius:16px 16px 0 0;padding-left:32px}
+.plco-brand-comparison .compare-brand{display:block;font-size:25px;font-weight:700;line-height:1.1}
+.plco-brand-comparison th:last-child .compare-brand{font-size:36px;font-weight:800;letter-spacing:-.7px}
+.plco-brand-comparison th small{display:block;margin-top:9px;font-size:14px;font-weight:400}
+.plco-brand-comparison th:last-child small{font-size:17px;color:#fff}
+.plco-brand-comparison td{padding:20px 25px;vertical-align:middle;border-bottom:1px solid #e7e5e9;background:#fff;line-height:1.4}
+.plco-brand-comparison td:first-child{font-size:18px;font-weight:500;color:#77717f}
+.plco-brand-comparison td:nth-child(2){font-size:21px;color:#777780;background:#fafafa}
+.plco-brand-comparison td:last-child{padding-left:32px;background:#fff4ed;font-size:27px;color:#29262d;border-bottom:1px solid #eedfd5}
+.plco-brand-comparison td strong{color:#e94c23;font-weight:800}
+.plco-brand-comparison td b{font-weight:700}
+.plco-brand-comparison td small{display:block;font-size:20px;color:#8874b8;margin-top:9px;font-weight:500}
+.plco-brand-comparison .compare-plus{color:#a6a0ad;font-weight:400}
+.plco-brand-comparison tr:last-child td:last-child{border-radius:0 0 16px 16px;font-size:25px}
+.plco-brand-comparison tr:last-child td:nth-child(2){border-bottom-left-radius:16px}
+'''
+
+# Subtle emphasis: balanced comparison with restrained MPS accents.
+S[18]['title']='플코(PLCO)와 MPS, <em>성장관리의 초점이 다릅니다</em>'
+REFERENCE_CSS+='''
+.plco-brand-comparison th{background:#f5f5f7;color:#55535c;padding:22px 25px}
+.plco-brand-comparison th:nth-child(2){width:39%;border-top:2px solid #e4e2e8;border-top-left-radius:10px}
+.plco-brand-comparison th:last-child{width:48%;background:#f5f5f7;color:#29262d;border-top:2px solid #fc582b;border-radius:10px 10px 0 0;padding-left:28px}
+.plco-brand-comparison .compare-brand,.plco-brand-comparison th:last-child .compare-brand{font-size:26px;font-weight:700;letter-spacing:0}
+.plco-brand-comparison th small,.plco-brand-comparison th:last-child small{font-size:14px;color:#77747e;font-weight:400}
+.plco-brand-comparison td{padding:21px 25px}
+.plco-brand-comparison td:nth-child(2){font-size:22px;color:#66636d;background:#fff}
+.plco-brand-comparison td:last-child{padding-left:28px;background:#fff;font-size:23px;color:#38343e;border-bottom:1px solid #e7e5e9}
+.plco-brand-comparison td strong{color:#38343e;font-weight:600}
+.plco-brand-comparison td b{font-weight:600}
+.plco-brand-comparison tbody tr:nth-child(2) td:last-child strong{color:#d95733}
+.plco-brand-comparison tbody tr:nth-child(3) td:last-child strong{color:#8874b8}
+.plco-brand-comparison td small{font-size:18px;color:#77747e;margin-top:8px;font-weight:400}
+.plco-brand-comparison tr:last-child td:last-child{font-size:22px;border-radius:0}
+.plco-brand-comparison td:first-child{color:#77747e}
+'''
+
+# Founder wording correction: keep PCDEQ in supporting notes only.
+for r in S:
+ for key in ['title','sub','body','source']:
+  r[key]=r[key].replace('PCDEQ 기반 스포츠심리평가','스포츠심리평가 + 인지검사').replace('PCDEQ 기반 멘탈평가','멘탈').replace('PCDEQ 기반 평가','멘탈평가').replace('PCDEQ 멘탈평가','스포츠심리평가').replace('PCDEQ + 인지발달검사','스포츠심리평가 + 인지검사').replace('인지발달검사','인지검사')
+S[7]['title']='멘탈은 <em>바이오밴딩 + 스포츠심리평가 + 인지검사 기반입니다</em>'
+S[7]['sub']='스포츠심리평가와 인지검사로 강점과 과제를 파악하고, 성장단계를 함께 보며 멘탈멘토링으로 연결합니다.'
+S[7]['body']=S[7]['body'].replace('멘탈평가 후<br><em>멘탈멘토링.</em>','멘탈을 이해하고<br><em>멘탈멘토링으로.</em>').replace('인지검사로 이해를 보완','성장단계와 함께 결과 해석')
+S[7]['source']='가상 선수의 예시 데이터 | 리포트와 프로그램 고도화 중'
+S[8]['sub']='멘탈평가 후, 매일 또는 격일의 다이어리를 바탕으로 프로선수 출신 멘토가 멘탈멘토링을 진행합니다.'
+S[17]['body']=S[17]['body'].replace('<span>스포츠심리검사</span>','<span>스포츠심리평가</span>')
+S[18]['body']=S[18]['body'].replace('<strong>멘탈</strong><small>인지검사 + 멘탈멘토링</small>','<strong>멘탈</strong><small>스포츠심리평가 + 인지검사</small>')
+# Keep the longer summary label readable within its original card.
+REFERENCE_CSS+='''
+.summary-mps article:last-child{min-width:0}
+'''
+for i in [2,6,7,8,17,18]:
+ S[i]['notes']+='\n발표 화면 최종 용어: 멘탈 / 스포츠심리평가 + 인지검사 / 멘탈멘토링. PCDEQ는 도구 기반 설명으로 근거 문서와 노트에만 보존한다.'
+
+# Exact founder wording for the mental assessment basis.
+mental_basis='바이오밴딩 + 스포츠심리평가/인지검사'
+S[7]['title']='멘탈은 <em>'+mental_basis+' 기반입니다</em>'
+S[18]['body']=S[18]['body'].replace('<small>스포츠심리평가 + 인지검사</small>','<small>'+mental_basis+'</small>')
+S[6]['body']=S[6]['body'].replace('스포츠심리평가 + 인지검사',mental_basis)
+S[2]['body']=S[2]['body'].replace('스포츠심리평가 + 인지검사',mental_basis)
+S[17]['body']=S[17]['body'].replace('<span>스포츠심리평가</span><i>+</i><span>인지검사</span>','<span>스포츠심리평가/인지검사</span>')
+for i in [2,6,7,17,18]:S[i]['notes']+='\n멘탈 평가 기반 최종 표기: '+mental_basis+'.'
+REFERENCE_CSS+='''
+.plco-brand-comparison tbody tr:nth-child(3) td:last-child small{font-size:18px}
+.circle-positioning .circle-keywords{left:1220px;font-size:14px}
+'''
+S[2]['body']=S[2]['body'].replace(mental_basis,'바이오밴딩 +<br>스포츠심리평가/인지검사')
+REFERENCE_CSS+='''
+.summary-domains .domain-m .domain-basis{white-space:normal;font-size:12.5px;line-height:1.12;margin-top:6px;padding-top:5px}
+'''
+
+# Insert after all existing indexed edits: founder precedes the team slide.
+founder_photo=ROOT/'20260919 사업제안서/사진자료/스태프/이정욱_캐주얼_상반신.png'
+founder_panels=[
+ ('01 / 임상과 교육','20년의 전문성','3대째 한의사, 스포츠한의학 20년<br>동국대와 가천대 한의학과 겸임교수<br>메디스트림 강의, 헬릭스미스 자문'),
+ ('02 / 축구의학','선수 곁의 팀닥터','FIFA 축구의학 코스 수료<br>스포츠한의학회 공인 팀닥터<br>서울 대동초 축구부 팀닥터'),
+ ('03 / 현장과 교류','국내외 축구 현장 경험','J리그 팀 등 한일 교류와 대회 의무지원<br>슛포러브 프로그램 촬영 지원<br>스포츠 심리상담사 1급'),
+ ('04 / 부모와 지도자','고객의 고민을 아는 대표','축구선수 학부모, 초등 축구부 학부모대표<br>클럽과 학교, 프로 산하와 골든에이지<br>선수 육성 과정을 직접 경험')]
+founder_body='<div class="ceo-profile"><div class="ceo-portrait">'+pic(founder_photo,'이정욱 대표','ceo-person')+'<div class="ceo-name"><small>SPORTS MPS / 주니어골든에이지</small><h2>이정욱 <span>대표</span></h2><p>해온한의원 본원 대표 한의사</p></div></div><div class="ceo-evidence"><div class="ceo-four">'+''.join('<article><small>'+label+'</small><h3>'+title+'</h3><p>'+detail+'</p></article>' for label,title,detail in founder_panels)+'</div><div class="ceo-mission"><small>대표의 문제의식에서 시작한 MPS</small><strong>재능이 낙오되지 않는 세상.</strong><span>의료의 전문성, 축구 현장, 부모의 경험을 하나의 서비스로.</span></div></div></div>'
+founder=dict(no=24,cat='대표 역량',title='대표 이정욱, <em>현장과 전문성을 잇습니다</em>',sub='의료와 교육, 축구 현장에서 쌓은 경험으로 선수의 성장관리를 사업으로 연결합니다.',body=founder_body,source='',cls='ceo-capability',notes='사용자가 지정한 기존 사업제안서 20260919 사업제안서/index.html의 대표 소개(표기20페이지)를 바탕으로 동일 인물 사진과 경력 내용을 구성했다. 20년의 임상과 교육: 3대째 한의사, 스포츠한의학20년, 동국대와 가천대 한의학과 겸임교수, 메디스트림 강의, 헬릭스미스 자문. 축구의학: FIFA 축구의학 코스 수료, 스포츠한의학회 공인 팀닥터, 서울 대동초 축구부 팀닥터. 현장: J리그 팀 등 한일교류 및 각종 대회 의무지원, 슛포러브 프로그램 촬영 지원, 스포츠 심리상담사1급. 부모 경험: 축구선수 학부모, 클럽/학교/프로산하/골든에이지 경험, 초등 축구부 학부모대표. 모두 사용자 제공 기존 소개자료 기준이며 새로운 성과나 계약을 추가하지 않았다. 자격과 경력은 멘탈평가 후 멘탈멘토링이라는 MPS 서비스 정의와 구분한다. 원자료 학력: 도쿄 石川台中学校, 서울 경기고, 동국대 한의학과. 원자료 수료증: FIFA Diploma in Football Medicine, 2020.08.11. 수료 이력을 학위로 표시하지 않는다. 원자료 미션: 재능이 낙오되지 않는 세상, 단정짓기보다 성장의 시간을 지켜줍니다.')
+S.insert(23,founder)
+for i,r in enumerate(S,1):r['no']=i
+S[1]['body']=S[1]['body'].replace('팀원 소개','대표 역량과 팀원 소개').replace('<b>23</b>','<b>23–24</b>').replace('<b>24</b>','<b>25</b>').replace('<b>25–26</b>','<b>26–27</b>')
+REFERENCE_CSS+='''
+.ceo-capability .content{top:235px}
+.ceo-profile{display:grid;grid-template-columns:365px 1fr;gap:40px;height:552px}
+.ceo-portrait{position:relative;border-radius:22px;background:#f7f6f8;overflow:hidden}
+.ceo-person{display:block;width:100%;height:397px;object-fit:contain;object-position:center bottom;padding:10px 12px 0}
+.ceo-name{padding:19px 24px;background:#f7f6f8;border-top:1px solid #e7e4ea}
+.ceo-name>small{font-size:12px;color:#8874b8}.ceo-name h2{font-size:35px;line-height:1.25;margin:10px 0 6px}.ceo-name h2 span{font-size:22px;font-weight:500;margin-left:7px}
+.ceo-name p{font-size:17px;color:#67636d}
+.ceo-four{display:grid;grid-template-columns:1fr 1fr;gap:19px 24px}
+.ceo-four article{padding:22px 24px;border:1px solid #e7e5eb;border-radius:17px;background:#fff}
+.ceo-four article>small{font-size:13px;color:#8874b8}.ceo-four h3{font-size:28px;margin:10px 0 13px;line-height:1.3}
+.ceo-four p{font-size:18px;line-height:1.75;color:#625e68;letter-spacing:-.3px}
+.ceo-mission{margin-top:23px;padding-left:23px;border-left:3px solid #fc582b;display:flex;flex-direction:column;gap:8px}
+.ceo-mission small{font-size:13px;color:#8874b8}.ceo-mission strong{font-size:29px;line-height:1.3;color:#29262d}.ceo-mission span{font-size:18px;color:#67636d}
+'''
+(DOC/'대표역량_추가근거.md').write_text('# 대표 역량 장표\n\n표기23페이지에 추가, 기존 팀원 소개는24페이지로 이동.\n\n'+founder['notes'])
+REFERENCE_CSS+='''
+.ceo-four article{padding:18px 24px}
+.ceo-mission{margin-top:19px}
+'''
+
+# Founder mission: specific reasons talent can be overlooked or lost.
+founder_slide=next(r for r in S if r['cls']=='ceo-capability')
+founder_slide['body']=founder_slide['body'].replace('<strong>재능이 낙오되지 않는 세상.</strong><span>의료의 전문성, 축구 현장, 부모의 경험을 하나의 서비스로.</span>','<strong class="ceo-mission-specific">멘탈의 어려움, 부상, 작은 체격이나 빠른 성숙 때문에<br><em>재능이 낙오되지 않도록.</em></strong>')
+founder_slide['notes']+='\n대표 미션 최신 문구: 멘탈의 어려움, 부상, 작은 체격이나 빠른 성숙 때문에 재능이 낙오되지 않도록.'
+REFERENCE_CSS+='''
+.ceo-mission .ceo-mission-specific{font-size:25px;line-height:1.45;letter-spacing:-.5px}
 '''
