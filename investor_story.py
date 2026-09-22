@@ -225,3 +225,37 @@ old_caption='전문가 워크숍 기존 사업자료'
 assert old_caption in S[13]['body']
 S[13]['body']=S[13]['body'].replace(old_caption,'전문가 네트워크, 한의사 봉사대기 70명 이상')
 S[13]['notes']+='\n대표 제공 네트워크 현황: 한의사 봉사대기70명 이상. 사진 설명에 반영했으며 실제 봉사 참여 완료 인원과 구분한다.'
+# Overseas reference cards with official identity assets and separated roadmap.
+S[19]['cls']='overseas-logos'
+items=[('ENGLAND / PREMIER LEAGUE','premier-league-logo.svg','Premier League','성장단계로 경기 집단 구성','비슷한 성숙도의 선수들이<br>함께 뛰는 바이오밴딩 사례'),('JAPAN / ARROWZ LAB','arrowz-lab-logo.svg','ARROWZ LAB','측정으로 현재 상태 이해','기초체력을 측정하고 분석해<br>개별 과제를 설명'),('JAPAN / ARROWZ GYM','arrowz-gym-logo.svg','ARROWZ GYM','훈련과 재측정을 연결','측정 결과를 바탕으로 훈련하고<br>기록으로 변화를 확인')]
+S[19]['body']='<div class="overseas-cards">'+''.join('<article><small>'+country+'</small><div class="official-logo">'+pic(A/name,label)+'</div><h2>'+title+'</h2><p>'+desc+'</p></article>' for country,name,label,title,desc in items)+'</div><div class="overseas-roadmap"><div class="roadmap-heading"><b>MPS 적용 계획</b><span>교류와 현지화부터 단계적으로 추진 (예정)</span></div>'+flow([('교류','운영과 연구'),('현지화','기준과 언어'),('파일럿','수요와 재현성'),('진출','파트너 계약')])+'</div>'
+S[19]['source']=link(PL,'Premier League 바이오밴딩')+' / '+link(AR,'ARROWZ LAB')+' / '+link('https://www.sports-science.co.jp/arrowz-gym/','ARROWZ GYM')+' | 해외 선행 사례'
+S[19]['notes']+='\n로고는 각 기관의 공식 웹사이트에서 가져왔다. 해외 선행 사례를 설명하는 용도이며 MPS와의 체결 실적으로 제시하지 않는다.'
+# Printed page21: operating network, without a repeated presenter signature.
+S[21]['body']=re.sub(r'<div class="mission-sign">.*?</div>','',S[21]['body'])
+S[21]['body']=re.sub(r'<p>.*?</p>','<p class="mission-partners">본사 × 의료기관 × 스튜디오 × 멘탈멘토링</p>',S[21]['body'],count=1)
+REFERENCE_CSS+='''
+.overseas-logos .content{top:244px}
+.overseas-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.overseas-cards article{height:322px;padding:24px 28px;background:#f6f6f8;border:1px solid #e5e5e9;border-radius:20px}
+.overseas-cards article>small{font-size:14px;color:#73737c;letter-spacing:.5px}
+.official-logo{height:116px;display:flex;align-items:center;justify-content:center;margin:9px 0 12px;background:white;border-radius:12px}
+.official-logo img{width:310px;height:76px;object-fit:contain}
+.overseas-cards h2{font-size:28px;line-height:1.3;margin:0 0 13px;letter-spacing:-.5px}
+.overseas-cards p{font-size:21px;line-height:1.5;color:#676771}
+.overseas-roadmap{margin-top:30px;padding-top:20px;border-top:1px solid #dddde3}
+.roadmap-heading{display:flex;gap:22px;align-items:center;margin-bottom:15px}
+.roadmap-heading b{font-size:22px}.roadmap-heading span{font-size:17px;color:#73737c}
+.overseas-roadmap .flow{gap:26px}
+.overseas-roadmap .flow article{padding:14px 20px;background:#f6f6f8}
+.overseas-roadmap .flow h3{font-size:25px;margin:6px 0}
+.overseas-roadmap .flow p{font-size:18px}
+.mission-reference .mission-partners{font-size:25px;white-space:nowrap;letter-spacing:-.4px}
+'''
+
+REFERENCE_CSS+=''''
+.overseas-cards article>small{font-size:15px;font-weight:700;letter-spacing:.3px}
+.official-logo img{width:295px;height:73px}
+.overseas-cards article:first-child .official-logo img{width:320px}
+.overseas-roadmap{margin-top:38px;padding-top:16px}
+'''
